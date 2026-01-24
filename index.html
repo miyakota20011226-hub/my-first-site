@@ -6,11 +6,12 @@
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
+
       gtag('config', 'G-BBFVYSC9XB');
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>配送料金最安値診断 2026年1月対応</title>
+    <title>配送料金最安値診断 2026年1月最新状況版</title>
     <style>
         :root { --primary: #ff3344; --success: #00b894; --bg: #f5f7fa; --card-bg: #ffffff; --text: #2d3436; }
         body { background: var(--bg); font-family: -apple-system, sans-serif; display: flex; justify-content: center; padding: 20px; margin: 0; }
@@ -42,8 +43,15 @@
         .price-amount { font-size: 1.3rem; font-weight: 900; color: var(--primary); text-align: right; }
         .empty-state { text-align: center; color: #b2bec3; margin-top: 40px; font-weight: 600; }
 
-        /* フッターセクションのスタイル */
-        footer { margin-top: 30px; padding: 20px; background: white; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); font-size: 0.75rem; color: #7f8c8d; }
+        /* ガイド記事バナーのスタイル */
+        .guide-banner { margin-top: 30px; padding: 25px; background: linear-gradient(135deg, #ff3344, #ff6b6b); border-radius: 20px; color: white; text-align: center; box-shadow: 0 10px 20px rgba(255, 51, 68, 0.2); }
+        .guide-banner h2 { font-size: 1.1rem; margin: 0; }
+        .guide-banner p { font-size: 0.8rem; margin: 8px 0 15px; opacity: 0.9; }
+        .guide-btn { display: inline-block; background: white; color: #ff3344; padding: 10px 30px; border-radius: 50px; text-decoration: none; font-weight: bold; font-size: 0.9rem; transition: 0.2s; }
+        .guide-btn:hover { transform: scale(1.05); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+
+        /* フッターセクション */
+        footer { margin-top: 40px; padding: 20px; background: white; border-radius: 20px; font-size: 0.75rem; color: #7f8c8d; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
         footer h3 { font-size: 0.85rem; color: var(--text); margin-bottom: 8px; }
         .footer-link { color: var(--primary); text-decoration: none; font-weight: bold; }
     </style>
@@ -52,9 +60,9 @@
 
 <div id="app">
   <header>
-    <h1>配送料金最安値診断<span>2026年1月対応</span></h1>
+    <h1>配送料金最安値診断<span>2026年1月最新版</span></h1>
     <p>サイズを入力するだけで最安値を判定</p>
-    <p>料金改定等ありますので念のため個人でもご確認を！</p>
+    <p>※2024年10月の郵便料金改定等、最新データに対応済み</p>
   </header>
 
   <div class="main-card">
@@ -77,11 +85,17 @@
     <div class="empty-state">数値を入力すると計算を開始します</div>
   </div>
 
+  <div class="guide-banner">
+      <h2>📦 送料節約の「裏技」ガイド</h2>
+      <p>2026年の配送事情を徹底解説。結局どれが一番おトク？</p>
+      <a href="guide.html" class="guide-btn">解説記事を読んで節約する</a>
+  </div>
+
   <footer>
       <h3>プライバシーポリシー</h3>
-      <p>当サイトではアクセス解析にGoogleアナリティクスを使用しています。データ収集にCookieを使用しますが、個人特定は行われません。今後、広告を掲載する際にもCookieを使用する場合があります。</p>
+      <p>当サイトではアクセス解析にGoogleアナリティクスを使用しています。データ収集にCookieを使用しますが、個人特定は行われません。詳細はGoogleのポリシーをご確認ください。</p>
       <div style="text-align: center; margin-top: 15px; padding-top: 15px; border-top: 1px dashed #edf2f7;">
-          <a href="https://forms.gle/5oE273QtkftZDUWn8" target="_blank" class="footer-link">📩 お問い合わせフォーム</a>
+          <a href="https://forms.gle/あなたのフォームID" target="_blank" class="footer-link">📩 お問い合わせフォーム</a>
           <p style="margin-top: 10px; opacity: 0.6;">&copy; 2026 配送料金最安値診断</p>
       </div>
   </footer>
@@ -89,6 +103,7 @@
 
 <script>
 const shippingData = [
+  // メルカリ便（らくらく・ゆうゆう）
   { name: "ゆうパケットポストmini", price: 180, maxL: 21.1, maxW: 16.8, maxD: 3, maxWeight: 2000, category: 'mercari', extra: "送料160円＋封筒20円" },
   { name: "ゆうパケットポスト", price: 222, maxL: 34, maxW: 25, maxD: 4, maxWeight: 2000, category: 'mercari', extra: "送料215円＋シール7円" },
   { name: "らくらく(ネコポス)", price: 210, maxL: 31.2, maxW: 22.8, maxD: 3, maxWeight: 1000, category: 'mercari', extra: "" },
@@ -102,6 +117,7 @@ const shippingData = [
   { name: "メルカリ便 140サイズ", price: 1450, total3: 140, maxWeight: 20000, category: 'mercari', extra: "" },
   { name: "メルカリ便 160サイズ", price: 1700, total3: 160, maxWeight: 25000, category: 'mercari', extra: "" },
 
+  // 一般（郵便局・ヤマト通常便）
   { name: "定形郵便", price: 110, maxL: 23.5, maxW: 12, maxD: 1, maxWeight: 50, category: 'general', extra: "50g以内" },
   { name: "クリックポスト", price: 185, maxL: 34, maxW: 25, maxD: 3, maxWeight: 1000, category: 'general', extra: "追跡あり" },
   { name: "レターパックライト", price: 430, maxL: 34, maxW: 24.8, maxD: 3, maxWeight: 4000, category: 'general', extra: "厚さ3cm以内" },
@@ -161,4 +177,3 @@ function calculate() {
 </script>
 </body>
 </html>
-
