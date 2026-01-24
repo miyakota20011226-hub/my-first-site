@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>配送料金最安値診断 2026年1月対応</title>
+    <style>
+        :root { --primary: #ff3344; --success: #00b894; --bg: #f5f7fa; --card-bg: #ffffff; --text: #2d3436; }
+        body { background: var(--bg); font-family: -apple-system, sans-serif; display: flex; justify-content: center; padding: 20px; margin: 0; }
+        #app { width: 100%; max-width: 440px; }
+        header { text-align: center; margin-bottom: 20px; background: white; padding: 20px; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        header h1 { font-size: 1.3rem; color: var(--text); margin: 0; }
+        header h1 span { color: var(--primary); display: block; font-size: 0.9rem; margin-top: 5px; font-weight: bold; }
+        header p { font-size: 0.75rem; color: #636e72; margin: 8px 0 0; line-height: 1.5; }
+        
+        .main-card { background: white; padding: 24px; border-radius: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .input-field label { font-size: 0.7rem; font-weight: bold; color: #b2bec3; margin-bottom: 6px; display: block; margin-left: 4px; }
+        input { width: 100%; padding: 14px; border: 2px solid #edf2f7; border-radius: 12px; font-size: 16px; box-sizing: border-box; transition: 0.3s; outline: none; }
+        input:focus { border-color: var(--primary); background: #fffafa; }
+
+        .mode-selector { display: flex; align-items: center; justify-content: center; margin-top: 20px; padding-top: 15px; border-top: 1px solid #f1f2f6; }
+        .toggle-switch { position: relative; width: 50px; height: 26px; margin-right: 12px; cursor: pointer; }
+        .toggle-switch input { display: none; }
+        .slider { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: #dfe6e9; border-radius: 34px; transition: .3s; }
+        .slider:before { content: ""; position: absolute; height: 18px; width: 18px; left: 4px; bottom: 4px; background: white; border-radius: 50%; transition: .3s; }
+        input:checked + .slider { background: var(--primary); }
+        input:checked + .slider:before { transform: translateX(24px); }
+
+        .card { background: white; padding: 18px; border-radius: 18px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.02); animation: fadeInUp 0.4s ease; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .cheapest { border: 2px solid var(--success); background: #f0fff4; }
+        .service-name { font-weight: 800; color: var(--text); font-size: 0.95rem; }
+        .extra-info { font-size: 0.7rem; color: #888; background: #f1f2f6; padding: 2px 8px; border-radius: 6px; margin-top: 6px; display: inline-block; }
+        .price-amount { font-size: 1.3rem; font-weight: 900; color: var(--primary); text-align: right; }
+        .empty-state { text-align: center; color: #b2bec3; margin-top: 40px; font-weight: 600; }
+
+        /* 将来の収益化・広告スペース */
+        .ad-space { margin-top: 30px; padding: 15px; background: #fffbe6; border: 1px dashed #ffe58f; border-radius: 12px; text-align: center; }
+        .ad-title { font-size: 0.7rem; color: #856404; font-weight: bold; margin-bottom: 10px; display: block; }
+        .ad-placeholder { font-size: 0.8rem; color: #b2bec3; }
+    </style>
+</head>
+<body>
+
+<div id="app">
+  <header>
+    <h1>配送料金最安値診断<span>2026年1月対応</span></h1>
+    <p>サイズを入力するだけで最安値を判定</p>
+    <p>料金改定等ありますので念のため個人でもご確認を！</p>
+  </header>
+
+  <div class="main-card">
+    <div class="input-grid">
+      <div class="input-field"><label>長辺 (cm)</label><input type="number" id="v1" placeholder="30"></div>
+      <div class="input-field"><label>短辺 (cm)</label><input type="number" id="v2" placeholder="20"></div>
+      <div class="input-field"><label>厚さ (cm)</label><input type="number" id="v3" placeholder="3"></div>
+      <div class="input-field"><label>重量 (g)</label><input type="number" id="weight" placeholder="500"></div>
+    </div>
+    <div class="mode-selector">
+      <label class="toggle-switch">
+        <input type="checkbox" id="mercariMode" checked>
+        <span class="slider"></span>
+      </label>
+      <span style="font-weight:bold; font-size:0.9rem; color:var(--text);">メルカリ便モード</span>
+    </div>
+  </div>
+
+  <div id="result-container">
+    <div class="empty-state">数値を入力すると計算を開始します</div>
+  </div>
+
+  <div class="ad-space">
+    <span class="ad-title">RECOMMENDED TOOLS</span>
+    <div class="ad-placeholder">ここにAmazonアフィリエイトなどの<br>梱包グッズリンクを貼る</div>
+  </div>
+</div>
+
+<script>
+const shippingData = [
+  // メルカリ便（らくらく・ゆうゆう）
+  { name: "ゆうパケットポストmini", price: 180, maxL: 21.1, maxW: 16.8, maxD: 3, maxWeight: 2000, category: 'mercari', extra: "送料160円＋封筒20円" },
+  { name: "ゆうパケットポスト", price: 222, maxL: 34, maxW: 25, maxD: 4, maxWeight: 2000, category: 'mercari', extra: "送料215円＋シール7円" },
+  { name: "らくらく(ネコポス)", price: 210, maxL: 31.2, maxW: 22.8, maxD: 3, maxWeight: 1000, category: 'mercari', extra: "" },
+  { name: "ゆうゆう(ゆうパケット)", price: 230, maxL: 34, maxW: 25, maxD: 3, maxWeight: 1000, category: 'mercari', extra: "" },
+  { name: "ゆうパケットプラス", price: 520, maxL: 24, maxW: 17, maxD: 7, maxWeight: 2000, category: 'mercari', extra: "送料455円＋専用箱65円" },
+  { name: "らくらく(宅急便コンパクト)", price: 520, maxL: 25, maxW: 20, maxD: 5, maxWeight: 99999, category: 'mercari', extra: "送料450円＋専用箱70円" },
+  { name: "メルカリ便 60サイズ", price: 750, total3: 60, maxWeight: 2000, category: 'mercari', extra: "" },
+  { name: "メルカリ便 80サイズ", price: 850, total3: 80, maxWeight: 5000, category: 'mercari', extra: "" },
+  { name: "メルカリ便 100サイズ", price: 1050, total3: 100, maxWeight: 10000, category: 'mercari', extra: "" },
+  { name: "メルカリ便 120サイズ", price: 1200, total3: 120, maxWeight: 15000, category: 'mercari', extra: "" },
+  { name: "メルカリ便 140サイズ", price: 1450, total3: 140, maxWeight: 20000, category: 'mercari', extra: "" },
+  { name: "メルカリ便 160サイズ", price: 1700, total3: 160, maxWeight: 25000, category: 'mercari', extra: "" },
+
+  // 一般（郵便局・ヤマト通常便）
+  { name: "定形郵便", price: 110, maxL: 23.5, maxW: 12, maxD: 1, maxWeight: 50, category: 'general', extra: "50g以内" },
+  { name: "クリックポスト", price: 185, maxL: 34, maxW: 25, maxD: 3, maxWeight: 1000, category: 'general', extra: "追跡あり" },
+  { name: "レターパックライト", price: 430, maxL: 34, maxW: 24.8, maxD: 3, maxWeight: 4000, category: 'general', extra: "厚さ3cm以内" },
+  { name: "レターパックプラス", price: 600, maxL: 34, maxW: 24.8, maxD: 10, maxWeight: 4000, category: 'general', extra: "対面受取" },
+  { name: "ヤマト宅急便 60サイズ", price: 940, total3: 60, maxWeight: 2000, category: 'general', extra: "通常料金目安" },
+  { name: "ヤマト宅急便 80サイズ", price: 1230, total3: 80, maxWeight: 5000, category: 'general', extra: "通常料金目安" },
+  { name: "ヤマト宅急便 100サイズ", price: 1530, total3: 100, maxWeight: 10000, category: 'general', extra: "通常料金目安" },
+  { name: "ヤマト宅急便 120サイズ", price: 1850, total3: 120, maxWeight: 15000, category: 'general', extra: "通常料金目安" },
+  { name: "ヤマト宅急便 140サイズ", price: 2190, total3: 140, maxWeight: 20000, category: 'general', extra: "通常料金目安" },
+  { name: "ヤマト宅急便 160サイズ", price: 2510, total3: 160, maxWeight: 25000, category: 'general', extra: "通常料金目安" },
+  { name: "ヤマト宅急便 180サイズ", price: 3060, total3: 180, maxWeight: 30000, category: 'general', extra: "通常料金目安" },
+  { name: "ヤマト宅急便 200サイズ", price: 3720, total3: 200, maxWeight: 30000, category: 'general', extra: "通常料金目安" }
+];
+
+const inputs = document.querySelectorAll('input');
+inputs.forEach(el => el.addEventListener('input', calculate));
+document.getElementById('mercariMode').addEventListener('change', calculate);
+
+function calculate() {
+  const v1 = parseFloat(document.getElementById('v1').value) || 0;
+  const v2 = parseFloat(document.getElementById('v2').value) || 0;
+  const v3 = parseFloat(document.getElementById('v3').value) || 0;
+  const weight = parseFloat(document.getElementById('weight').value) || 0;
+  const isMercari = document.getElementById('mercariMode').checked;
+  const res = document.getElementById('result-container');
+
+  if (!v1 || !v2 || !v3 || !weight) {
+    res.innerHTML = '<div class="empty-state">数値を入力してください</div>';
+    return;
+  }
+
+  const userSizes = [v1, v2, v3].sort((a, b) => b - a);
+  const total = v1 + v2 + v3;
+
+  let options = shippingData
+    .filter(s => s.category === (isMercari ? 'mercari' : 'general'))
+    .filter(s => {
+      if (weight > s.maxWeight) return false;
+      if (s.total3) return total <= s.total3;
+      const limits = [s.maxL, s.maxW, s.maxD].sort((a, b) => b - a);
+      return userSizes[0] <= limits[0] && userSizes[1] <= limits[1] && userSizes[2] <= limits[2];
+    })
+    .sort((a, b) => a.price - b.price);
+
+  res.innerHTML = options.length > 0 
+    ? options.map((opt, i) => `
+        <div class="card ${i === 0 ? 'cheapest' : ''}">
+          <div>
+            <div class="service-name">${opt.name}</div>
+            <div class="extra-info">${opt.extra}</div>
+          </div>
+          <div class="price-amount">${opt.price}円</div>
+        </div>
+      `).join('')
+    : '<div class="empty-state">該当する配送方法がありません</div>';
+}
+</script>
+</body>
+</html>
