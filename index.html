@@ -6,7 +6,6 @@
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-
       gtag('config', 'G-BBFVYSC9XB');
     </script>
     <meta charset="UTF-8">
@@ -16,6 +15,7 @@
         :root { --primary: #ff3344; --success: #00b894; --bg: #f5f7fa; --card-bg: #ffffff; --text: #2d3436; }
         body { background: var(--bg); font-family: -apple-system, sans-serif; display: flex; justify-content: center; padding: 20px; margin: 0; }
         #app { width: 100%; max-width: 440px; }
+        
         header { text-align: center; margin-bottom: 20px; background: white; padding: 20px; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
         header h1 { font-size: 1.3rem; color: var(--text); margin: 0; }
         header h1 span { color: var(--primary); display: block; font-size: 0.9rem; margin-top: 5px; font-weight: bold; }
@@ -35,22 +35,54 @@
         input:checked + .slider { background: var(--primary); }
         input:checked + .slider:before { transform: translateX(24px); }
 
-        .card { background: white; padding: 18px; border-radius: 18px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.02); animation: fadeInUp 0.4s ease; }
+        /* 結果カードのスタイル */
+        .card { 
+            background: white; 
+            padding: 18px; 
+            border-radius: 18px; 
+            margin-bottom: 16px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.02); 
+            animation: fadeInUp 0.4s ease;
+            position: relative;
+            transition: 0.2s;
+        }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .cheapest { border: 2px solid var(--success); background: #f0fff4; }
+        
+        /* 王冠バッジ（最安値） */
+        .cheapest { 
+            border: 2px solid var(--success); 
+            background: #f0fff4; 
+            transform: scale(1.02);
+            z-index: 1;
+        }
+        .cheapest::before {
+            content: "👑 最安値";
+            position: absolute;
+            top: -12px;
+            left: 12px;
+            background: var(--success);
+            color: white;
+            font-size: 0.65rem;
+            font-weight: bold;
+            padding: 2px 10px;
+            border-radius: 20px;
+            box-shadow: 0 4px 8px rgba(0, 184, 148, 0.3);
+        }
+
         .service-name { font-weight: 800; color: var(--text); font-size: 0.95rem; }
         .extra-info { font-size: 0.7rem; color: #888; background: #f1f2f6; padding: 2px 8px; border-radius: 6px; margin-top: 6px; display: inline-block; }
         .price-amount { font-size: 1.3rem; font-weight: 900; color: var(--primary); text-align: right; }
         .empty-state { text-align: center; color: #b2bec3; margin-top: 40px; font-weight: 600; }
 
-        /* ガイド記事バナーのスタイル */
         .guide-banner { margin-top: 30px; padding: 25px; background: linear-gradient(135deg, #ff3344, #ff6b6b); border-radius: 20px; color: white; text-align: center; box-shadow: 0 10px 20px rgba(255, 51, 68, 0.2); }
         .guide-banner h2 { font-size: 1.1rem; margin: 0; }
         .guide-banner p { font-size: 0.8rem; margin: 8px 0 15px; opacity: 0.9; }
         .guide-btn { display: inline-block; background: white; color: #ff3344; padding: 10px 30px; border-radius: 50px; text-decoration: none; font-weight: bold; font-size: 0.9rem; transition: 0.2s; }
-        .guide-btn:hover { transform: scale(1.05); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .guide-btn:hover { transform: scale(1.05); }
 
-        /* フッターセクション */
         footer { margin-top: 40px; padding: 20px; background: white; border-radius: 20px; font-size: 0.75rem; color: #7f8c8d; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
         footer h3 { font-size: 0.85rem; color: var(--text); margin-bottom: 8px; }
         .footer-link { color: var(--primary); text-decoration: none; font-weight: bold; }
@@ -93,7 +125,7 @@
 
   <footer>
       <h3>プライバシーポリシー</h3>
-      <p>当サイトではアクセス解析にGoogleアナリティクスを使用しています。データ収集にCookieを使用しますが、個人特定は行われません。詳細はGoogleのポリシーをご確認ください。</p>
+      <p>当サイトではアクセス解析にGoogleアナリティクスを使用しています。データ収集にCookieを使用しますが、個人特定は行われません。</p>
       <div style="text-align: center; margin-top: 15px; padding-top: 15px; border-top: 1px dashed #edf2f7;">
           <a href="https://forms.gle/あなたのフォームID" target="_blank" class="footer-link">📩 お問い合わせフォーム</a>
           <p style="margin-top: 10px; opacity: 0.6;">&copy; 2026 配送料金最安値診断</p>
@@ -125,11 +157,13 @@ const shippingData = [
   { name: "ヤマト宅急便 60サイズ", price: 940, total3: 60, maxWeight: 2000, category: 'general', extra: "" },
   { name: "ヤマト宅急便 80サイズ", price: 1230, total3: 80, maxWeight: 5000, category: 'general', extra: "" },
   { name: "ヤマト宅急便 100サイズ", price: 1530, total3: 100, maxWeight: 10000, category: 'general', extra: "" },
-  { name: "ヤマト宅急便 120サイズ", price: 1850, total3: 120, maxWeight: 15000, category: 'general', extra: "" },
-  { name: "ヤマト宅急便 140サイズ", price: 2190, total3: 140, maxWeight: 20000, category: 'general', extra: "" },
-  { name: "ヤマト宅急便 160サイズ", price: 2510, total3: 160, maxWeight: 25000, category: 'general', extra: "" },
-  { name: "ヤマト宅急便 180サイズ", price: 3060, total3: 180, maxWeight: 30000, category: 'general', extra: "" },
-  { name: "ヤマト宅急便 200サイズ", price: 3720, total3: 200, maxWeight: 30000, category: 'general', extra: "" }
+  
+  // 追加された郵便局データ
+  { name: "定形外郵便(規格内) 100g", price: 180, maxL: 34, maxW: 25, maxD: 3, maxWeight: 100, category: 'general', extra: "規格内" },
+  { name: "定形外郵便(規格内) 150g", price: 270, maxL: 34, maxW: 25, maxD: 3, maxWeight: 150, category: 'general', extra: "規格内" },
+  { name: "定形外郵便(規格外) 250g", price: 450, total3: 90, maxWeight: 250, category: 'general', extra: "厚さ3cm超" },
+  { name: "ゆうパック 60サイズ", price: 920, total3: 60, maxWeight: 25000, category: 'general', extra: "持込割引等でさらにお得" },
+  { name: "スマートレター", price: 210, maxL: 25, maxW: 17, maxD: 2, maxWeight: 1000, category: 'general', extra: "A5サイズ/追跡なし" }
 ];
 
 const inputs = document.querySelectorAll('input');
@@ -137,42 +171,42 @@ inputs.forEach(el => el.addEventListener('input', calculate));
 document.getElementById('mercariMode').addEventListener('change', calculate);
 
 function calculate() {
-  const v1 = parseFloat(document.getElementById('v1').value) || 0;
-  const v2 = parseFloat(document.getElementById('v2').value) || 0;
-  const v3 = parseFloat(document.getElementById('v3').value) || 0;
-  const weight = parseFloat(document.getElementById('weight').value) || 0;
-  const isMercari = document.getElementById('mercariMode').checked;
-  const res = document.getElementById('result-container');
+    const v1 = parseFloat(document.getElementById('v1').value) || 0;
+    const v2 = parseFloat(document.getElementById('v2').value) || 0;
+    const v3 = parseFloat(document.getElementById('v3').value) || 0;
+    const weight = parseFloat(document.getElementById('weight').value) || 0;
+    const isMercari = document.getElementById('mercariMode').checked;
+    const res = document.getElementById('result-container');
 
-  if (!v1 || !v2 || !v3 || !weight) {
-    res.innerHTML = '<div class="empty-state">数値を入力してください</div>';
-    return;
-  }
+    if (!v1 || !v2 || !v3 || !weight) {
+        res.innerHTML = '<div class="empty-state">数値を入力してください</div>';
+        return;
+    }
 
-  const userSizes = [v1, v2, v3].sort((a, b) => b - a);
-  const total = v1 + v2 + v3;
+    const userSizes = [v1, v2, v3].sort((a, b) => b - a);
+    const total = v1 + v2 + v3;
 
-  let options = shippingData
-    .filter(s => s.category === (isMercari ? 'mercari' : 'general'))
-    .filter(s => {
-      if (weight > s.maxWeight) return false;
-      if (s.total3) return total <= s.total3;
-      const limits = [s.maxL, s.maxW, s.maxD].sort((a, b) => b - a);
-      return userSizes[0] <= limits[0] && userSizes[1] <= limits[1] && userSizes[2] <= limits[2];
-    })
-    .sort((a, b) => a.price - b.price);
+    let options = shippingData
+        .filter(s => s.category === (isMercari ? 'mercari' : 'general'))
+        .filter(s => {
+            if (weight > s.maxWeight) return false;
+            if (s.total3) return total <= s.total3;
+            const limits = [s.maxL, s.maxW, s.maxD].sort((a, b) => b - a);
+            return userSizes[0] <= limits[0] && userSizes[1] <= limits[1] && userSizes[2] <= limits[2];
+        })
+        .sort((a, b) => a.price - b.price);
 
-  res.innerHTML = options.length > 0 
-    ? options.map((opt, i) => `
-        <div class="card ${i === 0 ? 'cheapest' : ''}">
-          <div>
-            <div class="service-name">${opt.name}</div>
-            <div class="extra-info">${opt.extra}</div>
-          </div>
-          <div class="price-amount">${opt.price}円</div>
-        </div>
-      `).join('')
-    : '<div class="empty-state">該当する配送方法がありません</div>';
+    res.innerHTML = options.length > 0 
+        ? options.map((opt, i) => `
+            <div class="card ${i === 0 ? 'cheapest' : ''}">
+              <div>
+                <div class="service-name">${opt.name}</div>
+                <div class="extra-info">${opt.extra}</div>
+              </div>
+              <div class="price-amount">${opt.price}<span>円</span></div>
+            </div>
+          `).join('')
+        : '<div class="empty-state">該当する配送方法がありません<br><small>サイズや重量を調整してください</small></div>';
 }
 </script>
 </body>
